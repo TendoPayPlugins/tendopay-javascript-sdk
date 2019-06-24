@@ -1,0 +1,24 @@
+{
+  "name": "tendopay-javascript-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TendoPay API Integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TendoPayPlugins/tendopay-javascript-sdk.git"
+  },
+  "keywords": [
+    "api",
+    "tendopay"
+  ],
+  "author": "Jerome Brunel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TendoPayPlugins/tendopay-javascript-sdk/issues"
+  },
+  "homepage": "https://github.com/TendoPayPlugins/tendopay-javascript-sdk#readme"
+}
