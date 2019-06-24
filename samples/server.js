@@ -6,6 +6,7 @@ const tendopay = require('../');
 const app = express();
 
 const tendoPayClient = new tendopay.Client();
+tendoPayClient.enableSandbox();
 
 app.get('/', (req, res) => {
   res.redirect('/cart');
@@ -18,4 +19,6 @@ app.post('/purchase', (req, res) => {
   res.send('TODO Purchase');
 });
 
-app.listen(8000);
+app.listen(8000, () => {
+  console.log('App listening on port 8000');
+});
