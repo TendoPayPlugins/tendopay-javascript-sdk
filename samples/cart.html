@@ -31,7 +31,8 @@
     <div class="container">
       <h2>TendoPay Sample App</h2>
       <h4>Cart</h4>
-      <form type="POST">
+      <form method="POST" action="/purchase">
+        <input type="hidden" name="price" value="1000">
         <table class="u-full-width u-max-full-width">
           <thead>
             <tr>
