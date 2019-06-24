@@ -5,15 +5,16 @@ const tendopay = require('../');
 
 const app = express();
 
-const TendoPayClient = new tendopay.Client();
-
-app.use('/cart', express.static('cart.html'));
+const tendoPayClient = new tendopay.Client();
 
 app.get('/', (req, res) => {
   res.redirect('/cart');
 });
 
+app.use('/cart', express.static('cart.html'));
+
 app.post('/purchase', (req, res) => {
+  // Handle payment
   res.send('TODO Purchase');
 });
 
