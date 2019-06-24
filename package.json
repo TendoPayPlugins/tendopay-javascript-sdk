@@ -2,7 +2,7 @@
   "name": "tendopay-javascript-sdk",
   "version": "1.0.0",
   "private": true,
-  "description": "TendoPay API Integration",
+  "description": "TendoPay JavaScrip API Integration",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
