@@ -1,7 +1,16 @@
 require('dotenv').config();
 
-let tendopay = require('../');
+const express = require('express');
+const tendopay = require('../');
 
-var TendoPayClient = new tendopay.Client();
+const app = express();
 
-console.log(tendopay);
+const TendoPayClient = new tendopay.Client();
+
+app.use('/cart', express.static('cart.html'));
+
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
+
+app.listen(8000);
