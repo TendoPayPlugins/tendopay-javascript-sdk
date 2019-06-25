@@ -21,13 +21,13 @@ app.post('/purchase', (req, res) => {
   const orderAmount = +req.body.price || 0;
   const orderTitle = 'Test Order #1';
 
-  console.log(merchantId, orderAmount, orderTitle);
-
   const tendoPayPayment = new tendopay.Payment({
     merchantId,
     requestAmount: orderAmount,
     description: orderTitle
   });
+
+  tendoPayClient.payment = tendoPayPayment;
 
   res.end('TODO');
 });
