@@ -18,7 +18,7 @@ app.use('/cart', express.static('cart.html'));
 
 app.post('/purchase', (req, res) => {
   const merchantId = 'TEST-OID-1234567890';
-  const orderAmount = +req.body.price;
+  const orderAmount = +req.body.price || 0;
   const orderTitle = 'Test Order #1';
 
   console.log(merchantId, orderAmount, orderTitle);
