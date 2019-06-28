@@ -30,7 +30,7 @@ app.post('/purchase', async (req, res) => {
 
   tendoPayClient.payment = tendoPayPayment;
 
-  res.end('Authorization link: ' + await tendoPayClient.getAuthorizeLink());
+  res.redirect(await tendoPayClient.getAuthorizeLink());
 });
 
 app.listen(8000, () => {
