@@ -3,7 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const tendopay = require('../');
 
-const tendoPayClient = new tendopay.Client({
+const TendoPayClient = tendopay.Client;
+const tendoPayClient = new TendoPayClient({
   sandboxEnabled: true
 });
 
@@ -16,6 +17,16 @@ app.get('/', (req, res) => {
 });
 
 app.use('/cart', express.static('cart.html'));
+
+app.get('/purchase', (req, res) => {
+  if (TendoPayClient.isCallbackRequest({request: req})) {
+    res.json(req.query);
+  } else {
+    res.json({
+      error: 'Not a callback request'
+    });
+  }
+});
 
 app.post('/purchase', async (req, res) => {
   const merchantOrderId = 'TEST-OID-1234567890';
