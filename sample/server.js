@@ -4,9 +4,7 @@ const express = require('express');
 const tendopay = require('../');
 
 const TendoPayClient = tendopay.Client;
-const tendoPayClient = new TendoPayClient({
-  sandboxEnabled: true
-});
+const tendoPayClient = new TendoPayClient(true);
 
 const app = express();
 app.use(express.json());
@@ -41,7 +39,7 @@ app.post('/purchase', async (req, res) => {
 
   tendoPayClient.payment = tendoPayPayment;
 
-  res.redirect(await tendoPayClient.getAuthorizeLink());
+  res.redirect(await tendoPayClient.getTendoPayURL());
 });
 
 app.listen(8000, () => {

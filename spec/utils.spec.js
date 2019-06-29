@@ -1,5 +1,4 @@
 const utils = require('../lib/utils');
-const constants = require('../lib/constants');
 
 describe('Utilities', () => {
   const deleteEnvVariables = () => {
@@ -31,32 +30,32 @@ describe('Utilities', () => {
     expect(utils.getClientSecret()).toBe('csecret');
   });
 
-  it ('should return the right base API URL', () => {
-    expect(utils.getBaseApiURL()).toBe(constants.http.baseApiURL);
-    expect(utils.getBaseApiURL(false)).toBe(constants.http.baseApiURL);
+  it('should return the right base API URL', () => {
+    expect(utils.getBaseApiURL()).toBe('https://app.tendopay.ph');
+    expect(utils.getBaseApiURL(false)).toBe('https://app.tendopay.ph');
 
-    expect(utils.getBaseApiURL(true)).toBe(constants.http.sandboxBaseApiURL);
+    expect(utils.getBaseApiURL(true)).toBe('https://sandbox.tendopay.dev');
     process.env.SANDBOX_HOST_URL = 'http://sandbox';
     expect(utils.getBaseApiURL(true)).toBe('http://sandbox');
   });
 
-  it ('should return the right redirect URI', () => {
+  it('should return the right redirect URI', () => {
     const params = {
       param1: 'test1',
       param2: 'test2'
     };
 
-    const prodRedirectURI = constants.http.baseApiURL + '/' + constants.http.redirectURI;
+    const prodRedirectURI = 'https://app.tendopay.ph/payments/authorise';
     expect(utils.getRedirectURI()).toBe(prodRedirectURI);
     expect(utils.getRedirectURI(false)).toBe(prodRedirectURI);
     expect(utils.getRedirectURI(false, params)).toBe(prodRedirectURI + '?param1=test1&param2=test2');
 
-    const sandboxRedirectURI = constants.http.sandboxBaseApiURL + '/' + constants.http.redirectURI;
+    const sandboxRedirectURI = 'https://sandbox.tendopay.dev/payments/authorise';
     expect(utils.getRedirectURI(true)).toBe(sandboxRedirectURI);
     expect(utils.getRedirectURI(true, params)).toBe(sandboxRedirectURI + '?param1=test1&param2=test2');
   });
 
-  it ('should hash parameters', () => {
+  it('should hash parameters', () => {
     const params = {
       param1: 'test1',
       param2: 'test2'
