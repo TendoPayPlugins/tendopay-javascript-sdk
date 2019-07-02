@@ -233,12 +233,11 @@ describe('TendoPay Client', () => {
             {
               tendopay_amount: 'reqa',
               tendopay_customer_reference_1: 'moid',
-              tendopay_description: '{"items":[{"item1":"desc1"}]}',
               tendopay_tendo_pay_vendor_id: 'mid',
               tendopay_authorisation_token: 'request-token',
               tendopay_redirect_url: 'http://redirect',
               tendopay_vendor: 'mid',
-              tendopay_hash: '16f05ee7a69febf5b06909de19fe9721baa672d9e642420c9feef6f4a1781233'
+              tendopay_hash: '40c4bbf27114134dd76835046652fc3027f00dac4bdbaabf667684d746217291'
             }
           );
           done();
