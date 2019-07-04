@@ -16,9 +16,21 @@ app.get('/', (req, res) => {
 
 app.use('/cart', express.static('cart.html'));
 
-app.get('/purchase', (req, res) => {
+const merchantOrderId = 'TEST-OID-1234567890';
+
+app.get('/purchase', async (req, res) => {
   if (TendoPayClient.isCallbackRequest({request: req})) {
-    res.json(req.query);
+    const transaction = await tendoPayClient.verifyTransaction({
+      merchantOrderId,
+      verificationRequest: new tendopay.VerifyTransactionRequest({
+        requestParams: req.query
+      })
+    });
+
+    res.json({
+      success: transaction.isVerified(),
+      query: req.query
+    });
   } else {
     res.json({
       error: 'Not a callback request'
@@ -27,7 +39,6 @@ app.get('/purchase', (req, res) => {
 });
 
 app.post('/purchase', async (req, res) => {
-  const merchantOrderId = 'TEST-OID-1234567890';
   const orderAmount = +req.body.price || 0;
   const orderTitle = 'Test Order #1';
 
