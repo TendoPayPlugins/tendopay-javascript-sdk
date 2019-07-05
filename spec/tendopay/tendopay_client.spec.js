@@ -114,9 +114,7 @@ describe('TendoPay Client', () => {
       tendopay_hash: 'hash'
     };
 
-    beforeAll(() => {
-      createEnvVariables();
-    });
+    beforeAll(createEnvVariables);
     beforeEach(() => {
       client = new Client(); // Initialize a new client before each
 
