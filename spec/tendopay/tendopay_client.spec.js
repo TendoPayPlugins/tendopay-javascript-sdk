@@ -1,6 +1,7 @@
 const Client = require('../../lib/tendopay/tendopay_client').Client;
 const Payment = require('../../lib/tendopay/tendopay_payment').Payment;
 const AccessToken = require('../../lib/tendopay/tendopay_access_token').AccessToken;
+const VerifyTransactionRequest = require('../../lib/tendopay/tendopay_verify_transaction_request').VerifyTransactionRequest;
 
 const utils = require('../../lib/utils');
 
@@ -106,15 +107,24 @@ describe('TendoPay Client', () => {
       access_token: 'ttoken'
     };
 
+    const serverVerifyResponse = {
+      tendopay_status: 'status',
+      tendopay_message: 'mess',
+      tendopay_transaction_number: 'tnum',
+      tendopay_hash: 'hash'
+    };
+
     beforeAll(() => {
       createEnvVariables();
     });
     beforeEach(() => {
       client = new Client(); // Initialize a new client before each
 
+      spyOn(client._httpClient, 'get');
       spyOn(client._httpClient, 'post');
     });
     afterEach(() => {
+      client._httpClient.get.calls.reset();
       client._httpClient.post.calls.reset();
     });
     afterAll(deleteEnvVariables);
@@ -201,6 +211,61 @@ describe('TendoPay Client', () => {
       }];
 
       expect(client.computeDescription(items)).toBe('{"items":[{"item1":"desc1"}]}');
+    });
+
+    describe('verifyTransaction', () => {
+      it('should throw an error if merchant order ID param is different than the one in the request', done => {
+        const merchantOrderId = 'cref';
+
+        const verificationRequest = new VerifyTransactionRequest({
+          requestParams: {
+            tendopay_customer_reference_1: 'fake'
+          }
+        });
+
+        expectAsync(client.verifyTransaction({merchantOrderId, verificationRequest}))
+        .toBeRejectedWith(new Error('Merchant order ID different than the one in the request'))
+        .then(done);
+      });
+
+      it('should verify a transaction', done => {
+        client._httpClient.get.and.returnValue(serverVerifyResponse);
+        client._httpClient.post.and.returnValue(serverAccessToken);
+        const merchantOrderId = 'cref';
+
+        const verificationRequest = new VerifyTransactionRequest({
+          requestParams: {
+            tendopay_disposition: 'dispo',
+            tendopay_transaction_number: 'transacno',
+            tendopay_verification_token: 'vftok',
+            tendopay_customer_reference_1: 'cref',
+            tendopay_user_id: 'uid',
+            tendopay_hash: 'ede2d780b36596cec078e35f1d70479772c0b716474d7492161116fef2d4ff8d'
+          }
+        });
+
+        client.verifyTransaction({merchantOrderId, verificationRequest})
+        .then(verificationResponse => {
+          expect(client._httpClient.get).toHaveBeenCalledWith('payments/api/v1/verification', {
+            params: {
+              tendopay_disposition: 'dispo',
+              tendopay_transaction_number: 'transacno',
+              tendopay_verification_token: 'vftok',
+              tendopay_customer_reference_1: 'cref',
+              tendopay_user_id: 'uid',
+              tendopay_tendo_pay_vendor_id: 'mid',
+              tendopay_hash: 'ede2d780b36596cec078e35f1d70479772c0b716474d7492161116fef2d4ff8d'
+            },
+            headers: {
+              Authorization: 'Bearer ttoken'
+            }
+          });
+          expect(client._httpClient.get).toHaveBeenCalledTimes(1);
+          expect(client._httpClient.post).toHaveBeenCalledTimes(1);
+
+          done();
+        });
+      });
     });
 
     describe('TendoPay link generation', () => {
