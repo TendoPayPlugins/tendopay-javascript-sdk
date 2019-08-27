@@ -53,6 +53,41 @@ app.post('/purchase', async (req, res) => {
   res.redirect(await tendoPayClient.getTendoPayURL());
 });
 
+app.post('/notify', async (req, res) => {
+  try {
+    const {transactionNumber} = new tendopay.NotifyRequest(req.body);
+    const {merchantId, merchantOrderId, amount, status} =
+        await tendoPayClient.getTransactionDetail(transactionNumber);
+
+    console.log({merchantId, merchantOrderId, amount, status});
+    // Search Merchant side transaction by merchantOrderId
+    // Check if the transaction is already processed
+    // The process should stop here if this transaction is already done.
+    // return 200 if this is a duplicated notification
+
+    switch (status) {
+      case tendopay.Constants.values.PURCHASE_TRANSACTION_SUCCESS:
+        // The transaction is successfully completed
+        // Do merchant job here
+        break;
+      case tendopay.Constants.values.PURCHASE_TRANSACTION_FAILURE:
+        // The transaction is unsuccessfully completed.
+        // Do merchant job here
+        break;
+      case tendopay.Constants.values.CANCEL_TRANSACTION_SUCCESS:
+        // the previous transaction is successfully cancelled
+        // Do merchant job here
+        break;
+    }
+
+    res.status(200).json();
+  } catch (e) {
+    console.error({e})
+    const {statusCode, data} = e
+    res.status(statusCode || 500).json(data || 'Unknown error');
+  }
+});
+
 app.listen(8000, () => {
   console.log('App listening on port 8000');
 });
