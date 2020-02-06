@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 
 app.use('/cart', express.static('cart.html'));
 
-const merchantOrderId = 'TEST-OID-1234567890';
+const merchantOrderId = 'TEST-OID-123324567890';
 
 app.get('/purchase', async (req, res) => {
   if (TendoPayClient.isCallbackRequest({request: req})) {
@@ -89,5 +89,5 @@ app.post('/notify', async (req, res) => {
 });
 
 app.listen(8000, () => {
-  console.log('App listening on port 8000');
+  console.log('App listening http://localhost:8000');
 });
