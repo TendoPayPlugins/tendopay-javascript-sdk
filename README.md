@@ -62,7 +62,7 @@ const tendoPayClient = new TendoPayClient();
 
 ### 1. Make a purchase
 
-To redirect the user to the TendoPay platform with the proper credentials and pruchase information, you need to generate the TendoPayUrl.
+To redirect the user to the TendoPay platform with the proper credentials and purchase information, you need to generate the TendoPayUrl.
 
 `Payment(...)` is a method from the root module, and returns an instance of a TendoPay Payment that will be used below to generate the URL.
 `getTendoPayURL(...)` is an async method from the TendoPayClient, and returns the generated URL from the latter's payment property.
