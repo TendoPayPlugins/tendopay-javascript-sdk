@@ -1,4 +1,5 @@
 require('dotenv').config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const express = require('express');
 const tendopay = require('../');
@@ -53,10 +54,9 @@ app.post('/purchase', async (req, res, next) => {
 
     res.redirect(await tendoPayClient.getTendoPayURL());
   } catch (err) {
-    res.json({
-      status: err.statusCode,
-      error: err.data
-    });
+    console.error(err)
+    res.status(err.statusCode)
+    res.json({ error: err.data })
   }
 });
 
