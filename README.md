@@ -115,6 +115,22 @@ if (TendoPayClient.isCallbackRequest({request: req})) {
 }
 ```
 
+- Example Response
+```json
+{
+"success": true,
+  "query": {
+    "tendopay_disposition": "success",
+    "tendopay_tendo_pay_vendor_id": "23",
+    "tendopay_transaction_number": "8395",
+    "tendopay_user_id": "24259",
+    "tendopay_verification_token": "7ee89cd3-a4a3-4ed1-9d0f-ac0a3a88bdfd",
+    "tendopay_customer_reference_1": "#123123123123",
+    "tendopay_hash": "484c42e729c94bd3844b97e8882381509d09348b5a864642a818c5e663585c86"
+  }
+}
+```
+
 ### 3. Notify the TendoPay platform about the purchase
 
 When you have received and processed the TendoPay response, you need to let the platform know the status.
