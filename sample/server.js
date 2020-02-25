@@ -38,19 +38,26 @@ app.get('/purchase', async (req, res) => {
   }
 });
 
-app.post('/purchase', async (req, res) => {
-  const orderAmount = +req.body.price || 0;
-  const orderTitle = 'Test Order #1';
+app.post('/purchase', async (req, res, next) => {
+  try {
+    const orderAmount = +req.body.price || 0;
+    const orderTitle = 'Test Order #1';
 
-  const tendoPayPayment = new tendopay.Payment({
-    merchantOrderId,
-    requestAmount: orderAmount,
-    description: orderTitle
-  });
+    const tendoPayPayment = new tendopay.Payment({
+      merchantOrderId,
+      requestAmount: orderAmount,
+      description: orderTitle
+    });
 
-  tendoPayClient.payment = tendoPayPayment;
+    tendoPayClient.payment = tendoPayPayment;
 
-  res.redirect(await tendoPayClient.getTendoPayURL());
+    res.redirect(await tendoPayClient.getTendoPayURL());
+  } catch (err) {
+    res.json({
+      status: err.statusCode,
+      error: err.data
+    });
+  }
 });
 
 app.post('/notify', async (req, res) => {
