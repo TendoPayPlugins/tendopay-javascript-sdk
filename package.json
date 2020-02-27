@@ -16,7 +16,7 @@
     "api",
     "tendopay"
   ],
-  "author": "Jerome Brunel",
+  "author": "TendoPayPlugins",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/TendoPayPlugins/tendopay-javascript-sdk/issues"
