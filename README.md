@@ -2,27 +2,42 @@
 
 TendoPay Client SDK to integrate the TendoPay payment solution with your own Ecommerce.
 
+---
+
+- [Requirements](#requirements)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [FAQ](#faq)
+
+
 ## Requirements
 - [Nodejs](https://nodejs.org/) ^8.0.0
 - [dotenv](https://www.npmjs.com/package/dotenv) ^8.0.0
 
+
+
 ## Features
 
-- Make a purchase and securely forward the payment to the TendoPay platform.
-- Get purchase information.
+- Make a purchase and securely and redirect the payment to the TendoPay platform.
+- Get purchase information as a callback.
+
 
 ## Installation
 
 ```javascript
 npm install tendopay --save
-```
+````
+
 Or
+
 ```javascript
 yarn add tendopay
 ```
 
 Identify your E-Commerce by adding the following to your .env
-```
+
+```text
 ## Merchant and client Credentials
 ## For sandbox API credentials login to: https://sandbox.tendopay.ph/merchants/login
 ## For Production API Credentials login to: https://app.tendopay.ph/merchants/login
@@ -52,7 +67,7 @@ MERCHANT_PERSONAL_ACCESS_TOKEN=
 *Make sure to properly handle Promise rejections in the following implementations*
 
 ### Setup
-Start by creating the TendoPayClient that you will use later to communicte with the TendoPay platform.
+Start by creating the TendoPayClient that you will later use to communicte with the TendoPay platform.
 ```javascript
 const tendopay = require('tendopay');
 
@@ -62,12 +77,13 @@ const tendoPayClient = new TendoPayClient();
 
 ### 1. Make a purchase
 
-To redirect the user to the TendoPay platform with the proper credentials and purchase information, you need to generate the TendoPayUrl.
+To redirect the user to the TendoPay platform with the proper credentials and purchase information, you need to generate the unique TendoPayURL hash.
 
 `Payment(...)` is a method from the root module, and returns an instance of a TendoPay Payment that will be used below to generate the URL.
 `getTendoPayURL(...)` is an async method from the TendoPayClient, and returns the generated URL from the latter's payment property.
 
 - Example Implementation
+
 ```javascript
 const orderId = '#123123123123';
 const orderPrice = 999;
@@ -88,13 +104,14 @@ redirect(await tendoPayClient.getTendoPayURL());
 ### 2. Handle the TendoPay callback
 
 Once the TendoPay platform has handled the payment request, it will redirect to your website with a callback.
-You should implement a handler for that callback in the `REDIRECT_URL` GET route you specified in your .env.
+You should add a handler for that callback in the `REDIRECT_URL` GET route specified in your .env.
 
 `isCallbackRequest(...)` is a method from the TendoPayClient, and will assert if the received GET request is legitimate.
 `verifyTransaction(...)` is an async method from the TendoPayClient, and will make sure the request you POSTed to the TendoPay platform, and the response you received are aligned.
 `VerifyTransactionRequest(...)` is a method from the root module, and creates a request instance readable by the TendoPay API.
 
 - Example Implementation
+
 ```javascript
 if (TendoPayClient.isCallbackRequest({request: req})) {
   const transaction = await tendoPayClient.verifyTransaction({
@@ -115,30 +132,15 @@ if (TendoPayClient.isCallbackRequest({request: req})) {
 }
 ```
 
-- Example Response
-```json
-{
-"success": true,
-  "query": {
-    "tendopay_disposition": "success",
-    "tendopay_tendo_pay_vendor_id": "23",
-    "tendopay_transaction_number": "8395",
-    "tendopay_user_id": "24259",
-    "tendopay_verification_token": "7ee89cd3-a4a3-4ed1-9d0f-ac0a3a88bdfd",
-    "tendopay_customer_reference_1": "#123123123123",
-    "tendopay_hash": "484c42e729c94bd3844b97e8882381509d09348b5a864642a818c5e663585c86"
-  }
-}
-```
-
 ### 3. Notify the TendoPay platform about the purchase
 
-When you have received and processed the TendoPay response, you need to let the platform know the status.
+When you have received and processed the TendoPay response, you need to let the platform know the status of the purchase.
 
 `NotifyRequest(...)` is a method from the root module, and will create a TendoPay ready request instance.
 `getTransactionDetail(...)` is an async method from the TendoPayClient and will return the information you need about the payment.
 
 - Example Implementation
+
 ```javascript
 const {transactionNumber} = new tendopay.NotifyRequest(req.body);
 const {merchantId, merchantOrderId, amount, status} =
@@ -168,13 +170,13 @@ case tendopay.Constants.values.PURCHASE_TRANSACTION_SUCCESS:
 res.status(200).json();
 ```
 
-## Questions and Answers
+## FAQ
 
-I'm having issues implementing and using the SDK, where can I get support ?
+I'm having issues using the SDK, where can I get support ?
 - Contact us at [support@tendopay.ph](mailto:support@tendopay.ph).
 
-Help! I can't find the credentials for the env file ?
-- Make an account on the [production portal(https://app.tendopay.ph/merchants/api-settings), or in the [sandbox portal(https://sandbox.tendopay.ph/merchants/api-settings) if you're in development phase.
+Help! I can't find the credentials for the .env file ?
+- Make an account on the [production portal](https://app.tendopay.ph/merchants/api-settings), or in the [sandbox portal](https://sandbox.tendopay.ph/merchants/api-settings) if you're in development phase.
 
 Can I use this SDK on the client side ?
 - The TendoPay SDK should ONLY be used on the server side. Revealing your merchant credentials to the public might endanger your merchant account by allowing people to hack and create fake purchases.
