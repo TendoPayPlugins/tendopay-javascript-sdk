@@ -1,4 +1,4 @@
-name: Jasmine
+name: ESLint
 
 on: [push]
 
