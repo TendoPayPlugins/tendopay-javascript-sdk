@@ -34,7 +34,7 @@ describe('Utilities', () => {
     expect(utils.getBaseApiURL()).toBe('https://app.tendopay.ph');
     expect(utils.getBaseApiURL(false)).toBe('https://app.tendopay.ph');
 
-    expect(utils.getBaseApiURL(true)).toBe('https://sandbox.tendopay.dev');
+    expect(utils.getBaseApiURL(true)).toBe('https://sandbox.tendopay.ph');
     process.env.SANDBOX_HOST_URL = 'http://sandbox';
     expect(utils.getBaseApiURL(true)).toBe('http://sandbox');
   });
@@ -50,7 +50,7 @@ describe('Utilities', () => {
     expect(utils.getRedirectURI(false)).toBe(prodRedirectURI);
     expect(utils.getRedirectURI(false, params)).toBe(prodRedirectURI + '?param1=test1&param2=test2');
 
-    const sandboxRedirectURI = 'https://sandbox.tendopay.dev/payments/authorise';
+    const sandboxRedirectURI = 'https://sandbox.tendopay.ph/payments/authorise';
     expect(utils.getRedirectURI(true)).toBe(sandboxRedirectURI);
     expect(utils.getRedirectURI(true, params)).toBe(sandboxRedirectURI + '?param1=test1&param2=test2');
   });
