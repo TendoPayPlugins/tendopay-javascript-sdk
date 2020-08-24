@@ -1,6 +1,6 @@
 {
   "name": "tendopay-javascript-sdk",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "private": true,
   "description": "TendoPay JavaScrip API Integration",
   "main": "index.js",
