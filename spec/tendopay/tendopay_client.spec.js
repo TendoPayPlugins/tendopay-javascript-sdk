@@ -2,6 +2,7 @@ const Client = require('../../lib/tendopay/tendopay_client').Client;
 const Payment = require('../../lib/tendopay/tendopay_payment').Payment;
 const AccessToken = require('../../lib/tendopay/tendopay_access_token').AccessToken;
 const VerifyTransactionRequest = require('../../lib/tendopay/tendopay_verify_transaction_request').VerifyTransactionRequest;
+const CancelTransactionRequest = require('../../lib/tendopay/tendopay_cancel_transaction_request').CancelTransactionRequest;
 
 const utils = require('../../lib/utils');
 
@@ -253,6 +254,37 @@ describe('TendoPay Client', () => {
               tendopay_user_id: 'uid',
               tendopay_tendo_pay_vendor_id: 'mid',
               tendopay_hash: 'ede2d780b36596cec078e35f1d70479772c0b716474d7492161116fef2d4ff8d'
+            },
+            headers: {
+              Authorization: 'Bearer ttoken'
+            }
+          });
+          expect(client._httpClient.get).toHaveBeenCalledTimes(1);
+          expect(client._httpClient.post).toHaveBeenCalledTimes(1);
+
+          done();
+        });
+      });
+    });
+
+    describe('cancelTransaction', () => {
+      it('should cancel a transaction', done => {
+        client._httpClient.get.and.returnValue(serverVerifyResponse);
+        client._httpClient.post.and.returnValue(serverAccessToken);
+
+        const cancelRequest = new CancelTransactionRequest({
+          requestParams: {
+            tendopay_transaction_number: 'transacid',
+            tendopay_hash: 'b4c79ddc3f1f49eba17508713d6f0952769c5bb034a3eafa1c67377f25e1e071'
+          }
+        });
+
+        client.cancelTransaction({cancelRequest})
+        .then(cancelResponse => {
+          expect(client._httpClient.get).toHaveBeenCalledWith('payments/api/v1/cancelPayment', {
+            params: {
+              tendopay_transaction_number: 'transacid',
+              tendopay_hash: 'b4c79ddc3f1f49eba17508713d6f0952769c5bb034a3eafa1c67377f25e1e071'
             },
             headers: {
               Authorization: 'Bearer ttoken'
