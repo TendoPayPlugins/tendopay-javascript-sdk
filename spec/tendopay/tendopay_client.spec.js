@@ -2,7 +2,6 @@ const Client = require('../../lib/tendopay/tendopay_client').Client;
 const Payment = require('../../lib/tendopay/tendopay_payment').Payment;
 const AccessToken = require('../../lib/tendopay/tendopay_access_token').AccessToken;
 const VerifyTransactionRequest = require('../../lib/tendopay/tendopay_verify_transaction_request').VerifyTransactionRequest;
-const CancelTransactionRequest = require('../../lib/tendopay/tendopay_cancel_transaction_request').CancelTransactionRequest;
 
 const utils = require('../../lib/utils');
 
@@ -272,19 +271,12 @@ describe('TendoPay Client', () => {
         client._httpClient.get.and.returnValue(serverVerifyResponse);
         client._httpClient.post.and.returnValue(serverAccessToken);
 
-        const cancelRequest = new CancelTransactionRequest({
-          requestParams: {
-            tendopay_transaction_number: 'transacid',
-            tendopay_hash: 'b4c79ddc3f1f49eba17508713d6f0952769c5bb034a3eafa1c67377f25e1e071'
-          }
-        });
-
-        client.cancelTransaction({cancelRequest})
+        client.cancelTransaction({transactionNumber: 123456789})
         .then(cancelResponse => {
           expect(client._httpClient.get).toHaveBeenCalledWith('payments/api/v1/cancelPayment', {
             params: {
-              tendopay_transaction_number: 'transacid',
-              tendopay_hash: 'b4c79ddc3f1f49eba17508713d6f0952769c5bb034a3eafa1c67377f25e1e071'
+              tendopay_transaction_number: 123456789,
+              tendopay_hash: 'eca674eb08469b5032cef02a3399c812ddf9c5a51ae36af0a72db42f5fcde887'
             },
             headers: {
               Authorization: 'Bearer ttoken'
@@ -293,6 +285,9 @@ describe('TendoPay Client', () => {
           expect(client._httpClient.get).toHaveBeenCalledTimes(1);
           expect(client._httpClient.post).toHaveBeenCalledTimes(1);
 
+          done();
+        })
+        .catch(error => {
           done();
         });
       });
