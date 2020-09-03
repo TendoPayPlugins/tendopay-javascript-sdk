@@ -182,4 +182,4 @@ Can I use this SDK on the client side ?
 - The TendoPay SDK should ONLY be used on the server side. Revealing your merchant credentials to the public might endanger your merchant account by allowing people to hack and create fake purchases.
 
 I'm a bit lost, can I get an example ?
-- Head to our [Example repository](https://github.com/TendoPayPlugins/tendopay-javascript-sdk/tree/example) and download the server sample we created using [Expressjs](https://expressjs.com/).
+- Head to our [Example repository](https://github.com/TendoPayPlugins/tendopay-sdk-examples) and download the server sample we created using [Expressjs](https://expressjs.com/).
