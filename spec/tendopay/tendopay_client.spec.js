@@ -266,6 +266,33 @@ describe('TendoPay Client', () => {
       });
     });
 
+    describe('cancelTransaction', () => {
+      it('should cancel a transaction', done => {
+        client._httpClient.get.and.returnValue(serverVerifyResponse);
+        client._httpClient.post.and.returnValue(serverAccessToken);
+
+        client.cancelTransaction({transactionNumber: 123456789})
+        .then(cancelResponse => {
+          expect(client._httpClient.get).toHaveBeenCalledWith('payments/api/v1/cancelPayment', {
+            params: {
+              tendopay_transaction_number: 123456789,
+              tendopay_hash: 'eca674eb08469b5032cef02a3399c812ddf9c5a51ae36af0a72db42f5fcde887'
+            },
+            headers: {
+              Authorization: 'Bearer ttoken'
+            }
+          });
+          expect(client._httpClient.get).toHaveBeenCalledTimes(1);
+          expect(client._httpClient.post).toHaveBeenCalledTimes(1);
+
+          done();
+        })
+        .catch(error => {
+          done();
+        });
+      });
+    });
+
     describe('TendoPay link generation', () => {
       it('should throw an error if no payment is defined', done => {
         expectAsync(client.getTendoPayURL()).toBeRejectedWith(new Error('No payment defined'))
