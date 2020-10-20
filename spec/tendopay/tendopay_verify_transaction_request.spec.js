@@ -5,32 +5,32 @@ describe('TendoPay VerifyTransactionRequest', () => {
     it('should construct an empty VerifyTransactionRequest object when empty parameters', () => {
       const verifyTransactionRequest = new VerifyTransactionRequest({});
 
-      expect(verifyTransactionRequest.disposition).toBe('failure');
-      expect(verifyTransactionRequest.transactionNumber).toBeNull();
-      expect(verifyTransactionRequest.verificationToken).toBeNull();
+      expect(verifyTransactionRequest.status).toBeNull();
+      expect(verifyTransactionRequest.transactionId).toBeNull();
       expect(verifyTransactionRequest.merchantOrderId).toBeNull();
-      expect(verifyTransactionRequest.userId).toBeNull();
-      expect(verifyTransactionRequest.hash).toBeNull();
+      expect(verifyTransactionRequest.amount).toBeNull();
+      expect(verifyTransactionRequest.message).toBeNull();
+      expect(verifyTransactionRequest.xSignature).toBeNull();
     });
 
     it('should construct a VerifyTransactionRequest object with parameters', () => {
       const verifyTransactionRequest = new VerifyTransactionRequest({
         requestParams: {
-          tendopay_disposition: 'dispo',
-          tendopay_transaction_number: 'transacno',
-          tendopay_verification_token: 'vftok',
-          tendopay_customer_reference_1: 'cref',
-          tendopay_user_id: 'uid',
-          tendopay_hash: 'hash'
+          tp_transaction_status: 'tpts',
+          tp_transaction_id: 'tpti',
+          tp_merchant_order_id: 'tpcmoi',
+          tp_amount: 1000,
+          tp_message: 'tpm',
+          x_signature: 'tpsignature'
         }
       });
 
-      expect(verifyTransactionRequest.disposition).toBe('dispo');
-      expect(verifyTransactionRequest.transactionNumber).toBe('transacno');
-      expect(verifyTransactionRequest.verificationToken).toBe('vftok');
-      expect(verifyTransactionRequest.merchantOrderId).toBe('cref');
-      expect(verifyTransactionRequest.userId).toBe('uid');
-      expect(verifyTransactionRequest.hash).toBe('hash');
+      expect(verifyTransactionRequest.status).toBe('tpts');
+      expect(verifyTransactionRequest.transactionId).toBe('tpti');
+      expect(verifyTransactionRequest.amount).toBe(1000);
+      expect(verifyTransactionRequest.merchantOrderId).toBe('tpcmoi');
+      expect(verifyTransactionRequest.message).toBe('tpm');
+      expect(verifyTransactionRequest.xSignature).toBe('tpsignature');
     });
   });
 });
