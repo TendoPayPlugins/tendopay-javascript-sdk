@@ -329,7 +329,7 @@ describe('TendoPay Client', () => {
         // Return access token on first call, request token on second call
         client._httpClient.post.and.returnValues('ttoken', {
           tp_order_token: 'tot',
-          tp_authorize_url: 'https://tp.authorize.url.com'
+          authorize_url: 'https://tp.authorize.url.com'
         });
 
         client.payment = new Payment({

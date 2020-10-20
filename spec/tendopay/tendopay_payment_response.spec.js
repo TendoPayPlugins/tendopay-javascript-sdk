@@ -13,7 +13,7 @@ describe('TendoPay Payment Response', () => {
       const payment = new PaymentResponse({
         requestParams: {
           tp_order_token: 'tot',
-          tp_authorize_url: 'https://tp.authorize.url.com'
+          authorize_url: 'https://tp.authorize.url.com'
         }
       });
 
