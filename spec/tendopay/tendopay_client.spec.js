@@ -9,17 +9,13 @@ describe('TendoPay Client', () => {
   const createEnvVariables = () => {
     process.env.CLIENT_ID = 'cid';
     process.env.CLIENT_SECRET = 'csecret';
-    process.env.SANDBOX_HOST_URL = 'http://sandbox';
     process.env.REDIRECT_URL = 'http://redirect';
-    process.env.ERROR_REDIRECT_URL = 'http://error-redirect';
   }
 
   const deleteEnvVariables = () => {
     delete process.env.CLIENT_ID;
     delete process.env.CLIENT_SECRET;
-    delete process.env.SANDBOX_HOST_URL;
     delete process.env.REDIRECT_URL;
-    delete process.env.ERROR_REDIRECT_URL;
   }
 
   describe('constructor', () => {
@@ -50,7 +46,6 @@ describe('TendoPay Client', () => {
       const prodClient = new Client();
       expect(prodClient.sandboxEnabled).toBe(false);
       expect(prodClient.redirectURL).toBe('http://redirect');
-      expect(prodClient.errorRedirectURL).toBe('http://error-redirect');
       expect(prodClient._httpClient).not.toBeUndefined();
 
       const sandboxClient = new Client(true);

@@ -6,7 +6,6 @@ describe('Utilities', () => {
     delete process.env.MERCHANT_SECRET;
     delete process.env.CLIENT_ID;
     delete process.env.CLIENT_SECRET;
-    delete process.env.SANDBOX_HOST_URL;
   }
 
   beforeEach(deleteEnvVariables);
@@ -31,8 +30,6 @@ describe('Utilities', () => {
     expect(utils.getBaseApiURL(false)).toBe('https://app.tendopay.ph');
 
     expect(utils.getBaseApiURL(true)).toBe('https://sandbox.tendopay.ph');
-    process.env.SANDBOX_HOST_URL = 'http://sandbox';
-    expect(utils.getBaseApiURL(true)).toBe('http://sandbox');
   });
 
   it('should hash parameters', () => {

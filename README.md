@@ -11,6 +11,12 @@ TendoPay Client SDK to integrate the TendoPay payment solution with your own Eco
 - [FAQ](#faq)
 
 
+## Changelog
+### 2.0.0
+- Usage of the TendoPay API v2.0
+- The payments flow has some breaking changes, please make sure you follow the updated documentation if you upgrade to v2.x.x
+
+
 ## Requirements
 - [Nodejs](https://nodejs.org/) ^8.0.0
 - [dotenv](https://www.npmjs.com/package/dotenv) ^8.0.0
@@ -41,25 +47,8 @@ Identify your E-Commerce by adding the following to your .env
 ## Merchant and client Credentials
 ## For sandbox API credentials login to: https://sandbox.tendopay.ph/merchants/login
 ## For Production API Credentials login to: https://app.tendopay.ph/merchants/login
-MERCHANT_ID=
-MERCHANT_SECRET=
 CLIENT_ID=
 CLIENT_SECRET=
-
-## Redirect URI when the transaction succeeds
-REDIRECT_URL=
-
-## Redirect URI when the transaction fails
-ERROR_REDIRECT_URL=
-
-## To enable sandbox mode uncomment SANDBOX_HOST_URL
-#SANDBOX_HOST_URL=https://sandbox.tendopay.ph
-
-
-#API
-## to generate token for sandbox login to: https://sandbox.tendopay.ph/merchants/login
-## to generate token for production to: https://app.tendopay.ph/merchants/login
-MERCHANT_PERSONAL_ACCESS_TOKEN=
 ```
 
 ## Usage
@@ -75,6 +64,12 @@ const TendoPayClient = tendopay.Client;
 const tendoPayClient = new TendoPayClient();
 ```
 
+To enable sandbox mode, create the client class with a true property:
+```javascript
+...
+... new TendoPayClient(true);
+```
+
 ### 1. Make a purchase
 
 To redirect the user to the TendoPay platform with the proper credentials and purchase information, you need to generate the unique TendoPayURL hash.
@@ -82,18 +77,47 @@ To redirect the user to the TendoPay platform with the proper credentials and pu
 `Payment(...)` is a method from the root module, and returns an instance of a TendoPay Payment that will be used below to generate the URL.
 `getTendoPayURL(...)` is an async method from the TendoPayClient, and returns the generated URL from the latter's payment property.
 
+\
+**Payment:**
+| Parameter | Description | Required | Type | Example |
+| :--- | :----: | :---: | :---: | ---:|
+| amount | The price of the payment | Yes | Integer | 1000 |
+| currency | The currency the order is placed in. Only PHP is supported. | Yes | String | 'PHP' |
+| merchantOrderId | The order ID | Yes | String | '#123123' |
+| description | A description of the order | No | String | 'Test order' |
+| billingCity | The billing address' city | No | String | 'Manila' |
+| billingAddress | The billing address | No | String | '123 Street' |
+| billingPostcode | The billing postal code | No | String | '1234' |
+| shippingCity | The shipping address' city | No | String | 'Manila' |
+| shippingAddress | The shipping address | No | String | '456 Street' |
+| shippingPostcode | The shipping postal code | No | String | '2134' |
+| userId | The user ID | No | String | '123' |
+
+
 - Example Implementation
 
 ```javascript
+const userId = '123';
 const orderId = '#123123123123';
 const orderPrice = 999;
 const orderAmount = +orderPrice;
 const orderTitle = 'Test Order #1';
+const currency = 'PHP';
+const billing = { city: 'Manila', 'address': '123 Street', 'postcode': '1234' }
+const shipping = { city: 'Manila', 'address': '456 Street', 'postcode': '4567' }
 
 const tendoPayPayment = new tendopay.Payment({
-  orderId,
+  merchantOrderId: orderId,
   amount: orderAmount,
-  description: orderTitle
+  currency: currency,
+  description: orderTitle,
+  billingCity: billing.city,
+  billingAddress: billing.address,
+  billingPostcode: billing.postcode,
+  shippingCity: shipping.city,
+  shippingAddress: shipping.address,
+  shippingPostcode: shipping.postcode,
+  userId: userId
 });
 
 tendoPayClient.payment = tendoPayPayment;
@@ -107,14 +131,27 @@ Once the TendoPay platform has handled the payment request, it will redirect to 
 You should add a handler for that callback in the `REDIRECT_URL` GET route specified in your .env.
 
 `isCallbackRequest(...)` is a method from the TendoPayClient, and will assert if the received GET request is legitimate.
-`verifyTransaction(...)` is an async method from the TendoPayClient, and will make sure the request you POSTed to the TendoPay platform, and the response you received are aligned.
-`VerifyTransactionRequest(...)` is a method from the root module, and creates a request instance readable by the TendoPay API.
+`verifyTransaction(...)` is a async method from the TendoPayClient, and will make sure the request you POSTed to the TendoPay platform is correct.
+`VerifyTransactionRequest(...)` is a class from the root module, and creates a request instance readable by the `verifyTransaction` method.
+
+\
+**VerifyTransactionRequest:**
+| Parameter | Description | Required | Type | Example |
+| :--- | :----: | :---: | :---: | ---:|
+| status | The status of the transaction - ['PAID', 'FAILED', 'CANCELED'] | Yes | String | 'PAID' |
+| transactionId | The transaction id | Yes | String | '#123123' |
+| xSignature | The signature hash shared with TendoPay | Yes | String | 'abcdefghijklmnopqrstuvwxyz1234567890' |
+| amount | The transaction amount | Yes if status == 'PAID' | String | '1000' |
+| message | The error message | Yes if status == 'FAILED' | String | 'There was an error' |
+| merchantOrderId | The order ID | No | String | '#123123' |
 
 - Example Implementation
 
 ```javascript
+const merchantOrderId = '#123123123';
+
 if (TendoPayClient.isCallbackRequest({request: req})) {
-  const transaction = await tendoPayClient.verifyTransaction({
+  const transactionStatus = await tendoPayClient.verifyTransaction({
     merchantOrderId,
     verificationRequest: new tendopay.VerifyTransactionRequest({
       requestParams: req.query
@@ -122,7 +159,7 @@ if (TendoPayClient.isCallbackRequest({request: req})) {
   });
 
   res.json({
-    success: transaction.isVerified(),
+    success: transactionStatus,
     query: req.query
   });
 } else {
