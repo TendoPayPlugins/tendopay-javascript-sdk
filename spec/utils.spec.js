@@ -35,32 +35,27 @@ describe('Utilities', () => {
     expect(utils.getBaseApiURL(true)).toBe('http://sandbox');
   });
 
-  it('should return the right redirect URI', () => {
-    const params = {
-      param1: 'test1',
-      param2: 'test2'
-    };
-
-    const prodRedirectURI = 'https://app.tendopay.ph/payments/authorise';
-    expect(utils.getRedirectURI()).toBe(prodRedirectURI);
-    expect(utils.getRedirectURI(false)).toBe(prodRedirectURI);
-    expect(utils.getRedirectURI(false, params)).toBe(prodRedirectURI + '?param1=test1&param2=test2');
-
-    const sandboxRedirectURI = 'https://sandbox.tendopay.ph/payments/authorise';
-    expect(utils.getRedirectURI(true)).toBe(sandboxRedirectURI);
-    expect(utils.getRedirectURI(true, params)).toBe(sandboxRedirectURI + '?param1=test1&param2=test2');
-  });
-
   it('should hash parameters', () => {
     const params = {
-      param1: 'test1',
-      param2: 'test2'
+      tp_amount: 1000,
+      tp_currency: 'PHP',
+      tp_merchant_order_id: 'TEST-OID-123324567890',
+      tp_redirect_url: 'http://localhost:8000/purchase',
+      tp_description: 'Test Order #1',
+      tp_billing_city: 'Manila',
+      tp_billing_address1: '123 Street',
+      tp_billing_postcode: '1234',
+      tp_shipping_city: 'Manila',
+      tp_shipping_address1: '456 Street',
+      tp_shipping_postcode: '5678',
+      tp_merchant_user_id: '123',
+      some_other_value: 'other_value'
     };
 
-    process.env.MERCHANT_SECRET = 'msecret1';
-    expect(utils.xSignature(params)).toBe('67b36f2c1b611d5dac96328556d443c55b10634902eebec7c30c24e728ad829c');
+    process.env.CLIENT_SECRET = 'csecret1';
+    expect(utils.xSignature(params)).toBe('46d5cbc2a2c3c980b086f1e44fcd210ecd9a7a2bec8f98a0f7cb8c373e677f36');
 
-    process.env.MERCHANT_SECRET = 'msecret2';
-    expect(utils.xSignature(params)).toBe('20c389dd1e1aa65a86a3e7332f58383d58168e18179edc2da75cdd4ee6c822b3');
+    process.env.CLIENT_SECRET = 'csecret2';
+    expect(utils.xSignature(params)).toBe('6801734de8062b96ea7e5523f7f9101c44912cb8c1a4c31e2d7c65cd525a41b1');
   });
 });
