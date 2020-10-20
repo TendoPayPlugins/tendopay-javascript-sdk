@@ -7,7 +7,7 @@ describe('TendoPay Payment', () => {
 
       expect(payment.merchantOrderId).toBeNull();
       expect(payment.description).toBeNull();
-      expect(payment.requestAmount).toBeNull();
+      expect(payment.amount).toBeNull();
       expect(payment.items).toEqual([]);
     });
 
@@ -19,13 +19,13 @@ describe('TendoPay Payment', () => {
       const payment = new Payment({
         merchantOrderId: 'moid',
         description: 'desc',
-        requestAmount: 1000,
+        amount: 1000,
         items
       });
 
       expect(payment.merchantOrderId).toBe('moid');
       expect(payment.description).toBe('desc');
-      expect(payment.requestAmount).toBe(1000);
+      expect(payment.amount).toBe(1000);
       expect(payment.items).toEqual(items);
     });
   });

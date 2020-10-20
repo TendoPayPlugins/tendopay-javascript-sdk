@@ -308,7 +308,7 @@ describe('TendoPay Client', () => {
         client.payment = new Payment({
           merchantOrderId: 'moid',
           description: 'desc',
-          requestAmount: 'reqa',
+          amount: 'reqa',
           items: [
             {
               item1: 'desc1'

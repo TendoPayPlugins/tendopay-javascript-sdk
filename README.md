@@ -92,7 +92,7 @@ const orderTitle = 'Test Order #1';
 
 const tendoPayPayment = new tendopay.Payment({
   orderId,
-  requestAmount: orderAmount,
+  amount: orderAmount,
   description: orderTitle
 });
 
